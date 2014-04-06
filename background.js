@@ -1,4 +1,11 @@
 /*
+Permissions needed in manifest for this to run in bg:
+
+  "background": {
+    "persistent" : true,
+    "scripts": ["jquery-2.1.0.min.js", "background.js"]
+  },
+
 Eventually this should become an event driven page instead of a pure background
 page. However, only webRequest is currently not availble on event driven pages
 for builds outside of the dev channel.
