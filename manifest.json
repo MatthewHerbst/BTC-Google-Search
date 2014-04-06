@@ -15,15 +15,15 @@
   "options_page": "options.html",
 
   "background": {
-    "persistent": false,
     "scripts": ["background.js"]
   },
 
   "permissions": [
     "alarms",
-    "*:google.com/*",
+    "https://www.google.com/*",
     "storage",
     "webRequest",
+    "webRequestBlocking",
     "http://api.bitcoincharts.com/v1/"
   ]
 }
