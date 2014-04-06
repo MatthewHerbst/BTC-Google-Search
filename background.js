@@ -195,8 +195,8 @@ function getYesterdayAvg(){
 			var d = new Date();
 			d.setDate(d.getDate()-1);
 			var formatted = d.getFullYear()+'-'+formatDate(d.getMonth()+1)+'-'+formatDate((d.getDay()-1));
-			bkg.console.log(formatted +'-'+json);
-			result.yesterday_avg = data.json['bpi'][formatted];
+			bkg.console.log(json['bpi']);
+			data.result.yesterday_avg = json['bpi'][formatted];
 
 			getChange();
 		},
@@ -204,7 +204,7 @@ function getYesterdayAvg(){
 	});
 }
 function getChange(){
-	result.change = result.close - result.yesterday_avg; 
+	data.result.change = data.result.close - data.result.yesterday_avg; 
 }
 function getHashRate() {
     $.ajax({
