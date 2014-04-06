@@ -83,17 +83,15 @@ function init() {
     
 }
 
-function getImage(url) {
-    $.ajax({
-        url: url,
-        dataType: "image/png",
-        success: getImageSuccess,
-        error: ajaxError
-    });
+function buildContainer() {
+    
 }
 
-function getImageSuccess(data, textStatus, jqXHR) {
-
+/*
+Sets the URL of the img tag holding the graph, thus effectively changing the image
+*/
+function updateGraphImage(url) {
+    $('.fmob_rc_ct img').attr('src', url);
 }
 
 function ajaxError(jqXHR, textStatus, errorThrown) {
