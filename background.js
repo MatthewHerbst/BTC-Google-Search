@@ -201,14 +201,14 @@ chrome.webRequest.onBeforeRequest.addListener(
         var positive = false;
         var index = details.url.search(/&q=/);
         if(index != -1){
-            subs = details.url.substring(index);
-            subs = subs.substring(3,subs.indexOf('&'));
+            subs = details.url.substring(index+3);
+            subs = subs.substring(0,subs.indexOf('&'));
             positive = checkForBitcoin(subs);
         }
         if(positive){
 	    //Positive bitcoin match
+            bkg.console.log(subs);
 	    getCardData();
-            bkg.console.log("Bazinga: "+subs);
         }
         return;
     },
