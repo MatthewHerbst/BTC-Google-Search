@@ -9,34 +9,34 @@ var bkg = chrome.extension.getBackgroundPage();
 
 //Core data
 var data = {
-    baseURL: "http://bitcoincharts.com/charts/chart.png
-        ?width=940
-        &m=bitstampUSD
-        &SubmitButton=Draw
-        &r=5&i=15-min
-        &c=0
-        &s=
-        &e=
-        &Prev=
-        &Next=
-        &t=M
-        &b=
-        &a1=
-        &m1=10
-        &a2=
-        &m2=25
-        &x=0
-        &i1=
-        &i2=
-        &i3=
-        &i4=
-        &v=1
-        &cv=0
-        &ps=0
-        &l=0
-        &p=0&",
-	urls: {
-        formats: {
+    baseURL: "http://bitcoincharts.com/charts/chart.png?",
+    options {
+        "width": "940",
+        "height": "",
+        "m": "bitstampUSD",
+        "SubmitButton": "Draw",
+        "c": "",
+        "s": "",
+        "e": "",
+        "Prev": "",
+        "Next": "",
+        "t": "M",
+        "b": "",
+        "a1": "",
+        "m1": "10",
+        "a2": "",
+        "m2": "25",
+        "x": "0",
+        "i1": "",
+        "i2": "",
+        "i3": "",
+        "i4": "",
+        "v": "1",
+        "cv": "0",
+        "ps": "0",
+        "l": "0",
+        "p": "0"
+        ranges: {
             1d: {
                 i: "",
                 r: ""
@@ -64,19 +64,29 @@ var data = {
             max: {
                 i: "",
                 r: ""
-            }
-        },
-        options {
-            width: "",
-            height: ""
         }
     }
 }
 
 function optimizeURLS() {
-    //setOptimumWidth();
-    //setOptimumHeight();
-    //TODO: optimize!
+    setOptimumWidth();
+    setOptimumHeight();
+}
+
+function buildURL(range) {
+    var url = data.baseURl;
+
+    var first = true; //Control the placement of '&'
+    for(var key in data.options) {
+        if(data.options.hasOwnProperty(key)) { //Make sure it's a real property
+            if(!first) {
+                url += "&" + key + data.options.key;
+            } else {
+                url += key + data.options.key;
+                first = false;
+            }
+        }
+    }
 }
 
 //Keeps the lastUpdated variable up-to-date
