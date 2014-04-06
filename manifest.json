@@ -25,6 +25,8 @@
     "storage",
     "tabs",
     "webRequest",
-    "http://api.bitcoincharts.com/v1/"
+    "http://api.bitcoincharts.com/v1/",
+    "http://blockchain.info/g/",
+    "http://api.coindex.com/*"
   ]
 }
