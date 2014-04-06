@@ -10,7 +10,7 @@ var bkg = chrome.extension.getBackgroundPage();
 //Core data
 var data = {
     baseURL: "http://bitcoincharts.com/charts/chart.png?",
-    options {
+    options: {
         "width": "940",
         "height": "",
         "m": "bitstampUSD",
@@ -64,6 +64,7 @@ var data = {
             max: {
                 i: "",
                 r: ""
+            }
         }
     }
 }
