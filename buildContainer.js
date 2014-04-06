@@ -1,3 +1,4 @@
+function buildContainer() {
 var d = new Date();
 var domElement = "<li class='mod g tpo knavi obcontainer'>
 <!--m-->
@@ -19,40 +20,40 @@ var domElement = "<li class='mod g tpo knavi obcontainer'>
 							<div class='cv_cb'>
 								<div class='cv_card_content'>
 									<div class='fmob_pl vk_h'>
-										<span class='vk_bk fmob_pr fac-l' data-symbol='BTC' data-value='" + data.resuult.close + "'> " + data.resuult.close + "</span>
-										<span class='vk_fin_dn fac-c' data-symbol='BTC'>-1.14 (-2.78%)</span>
+										<span class='vk_bk fmob_pr fac-l' data-symbol='BTC' data-value='" + data.result.close + "'> " + data.result.close + "</span>
+										<span class='vk_fin_dn fac-c' data-symbol='BTC'>-" + data.result.change + " (" + ((data.result.change >= 0) ? "+" : "-") + data.result.change + "%)</span>
 									</div>
 									<div class='fmob_r_ct'>
 										<div class='fmob_rc_ct'>
-											<a href='/finance?q=NASDAQ:MSFT' data-hveid='42' onmousedown='return rwt(this,'','','','1','AFQjCNGpx3Ihnd86NMxJYw4fBqcm_8TgsQ','PqHOzeq268tILXLSXK1g3w','0CCoQ2AEwAA','','',event)'>
-												<img src='https://www.google.com/finance/chart?q=NASDAQ%3AMSFT&amp;tlf=12&amp;chst=vks&amp;client=ob&amp;chs=330x96&amp;chsc=2&amp;ei=jAdBU7fQFPKtsQTV2oCYDw&amp;nocache=1396771604373' style='border:0' alt='' id='fmob_chart'>
+											<a href='http://bitcoincharts.com/markets/" + result.symbol + ".html'>
+												<img src='" + buildURL("d1") + "' style='border:0' alt='Bitcoin Market Data' id='fmob_chart'>
 											</a>
 											<div id='fmob_cb_container'>
-												<div class='fmob_cb_l' onclick='window.google.fmob.selectChartPeriod(0)' data-ved='0CCsQ-BMoADAA'>
+												<div class='fmob_cb_l' onclick='updateRange(d1)' data-ved='0CCsQ-BMoADAA'>
 													<span class='fmob_cb_np ksb mini' style='display:none'>1d</span>
 													<span class='fmob_cb_pr ksb ksbs mini'>1d</span>
 												</div>
-												<div class='fmob_cb_m' onclick='window.google.fmob.selectChartPeriod(1)' data-ved='0CCwQ-BMoATAA'>
+												<div class='fmob_cb_m' onclick='updateRange(d5)' data-ved='0CCwQ-BMoATAA'>
 													<span class='fmob_cb_np ksb mini'>5d</span>
 													<span class='fmob_cb_pr ksb ksbs mini' style='display:none'>5d</span>
 												</div>
-												<div class='fmob_cb_m' onclick='window.google.fmob.selectChartPeriod(2)' data-ved='0CC0Q-BMoAjAA'>
+												<div class='fmob_cb_m' onclick='updateRange(m1)' data-ved='0CC0Q-BMoAjAA'>
 													<span class='fmob_cb_np ksb mini'>1m</span>
 													<span class='fmob_cb_pr ksb ksbs mini' style='display:none'>1m</span>
 												</div>
-												<div class='fmob_cb_m' onclick='window.google.fmob.selectChartPeriod(3)' data-ved='0CC4Q-BMoAzAA'>
+												<div class='fmob_cb_m' onclick='updateRange(m6)' data-ved='0CC4Q-BMoAzAA'>
 													<span class='fmob_cb_np ksb mini'>6m</span>
 													<span class='fmob_cb_pr ksb ksbs mini' style='display:none'>6m</span>
 												</div>
-												<div class='fmob_cb_m' onclick='window.google.fmob.selectChartPeriod(4)' data-ved='0CC8Q-BMoBDAA'>
+												<div class='fmob_cb_m' onclick='updateRange(y1)' data-ved='0CC8Q-BMoBDAA'>
 													<span class='fmob_cb_np ksb mini'>1y</span>
 													<span class='fmob_cb_pr ksb ksbs mini' style='display:none'>1y</span>
 												</div>
-												<div class='fmob_cb_m' onclick='window.google.fmob.selectChartPeriod(5)' data-ved='0CDAQ-BMoBTAA'>
+												<div class='fmob_cb_m' onclick='updateRange(y5)' data-ved='0CDAQ-BMoBTAA'>
 													<span class='fmob_cb_np ksb mini'>5y</span>
 													<span class='fmob_cb_pr ksb ksbs mini' style='display:none'>5y</span>
 												</div>
-												<div class='fmob_cb_r' onclick='window.google.fmob.selectChartPeriod(6)' data-ved='0CDEQ-BMoBjAA'>
+												<div class='fmob_cb_r' onclick='updateRange(max)' data-ved='0CDEQ-BMoBjAA'>
 													<span class='fmob_cb_np ksb mini'>max</span>
 													<span class='fmob_cb_pr ksb ksbs mini' style='display:none'>max</span>
 												</div>
@@ -61,26 +62,26 @@ var domElement = "<li class='mod g tpo knavi obcontainer'>
 										<div class='fmob_rd_ct vk_txt'>
 											<div class='fmob_rd_bl'>
 												<div class='fmob_rd_it'>
-													<div>Open</div>
+													<div>Avg</div>
 													<div>High</div>
 													<div>Low</div>
 												</div>
 												<div class='fmob_rd_itv'>
-													<div>41.25</div>
-													<div>41.39</div>
-													<div>39.64</div>
+													<div>" + data.result.avg + "</div>
+													<div>" + data.result.high + "</div>
+													<div>" + data.result.low + "</div>
 												</div>
 											</div>
 											<div class='fmob_rd_bl'>
 												<div class='fmob_rd_it'>
 													<div>Volume</div>
-													<div>Avg Vol</div>
-													<div>Mkt Cap</div>
+													<div>Currency Volume</div>
+													<div>Network Total</div>
 												</div>
 												<div class='fmob_rd_itv'>
-													<div>51,409,573</div>
-													<div>36,685,000</div>
-													<div>330.95B</div>
+													<div>" + data.result.volume + "</div>
+													<div>" + data.result.currency_volume + "</div>
+													<div>" + data.result.hashrate + " Ghash/s</div>
 												</div>
 											</div>
 										</div>
@@ -94,19 +95,11 @@ var domElement = "<li class='mod g tpo knavi obcontainer'>
 			</div>
 		</div>
 		<div class='vk_ftr'>
-			<div style='float:right'>
-				<a href='/help/stock_disclaimer.html' onmousedown='return rwt(this,'','','','1','AFQjCNGnHil2YtMmdOtNYYl6phW4pul0mQ','hvNEw2Lm9pdjWswOFEu_9w','0CDMQ1AEwAA','','',event)'>Disclaimer</a>
-			</div>
-			<span>
-				<a href='http://www.google.com/finance?q=NASDAQ:MSFT' onmousedown='return rwt(this,'','','','1','AFQjCNESy8T8LXacPy5MS24a6erZUAJB_A','b1uBAz48g50QxXwVQWkrwA','0CDQQ1wEoADAA','','',event)'>Google Finance</a>
-			</span> - 
-			<span>
-				<a href='http://finance.yahoo.com/q?d=t&amp;s=MSFT' onmousedown='return rwt(this,'','','','1','AFQjCNEzzS7QoxWyBxtUsQP49kTtL4LojQ','w_F1RaZvsCeUpkxXSSceuw','0CDUQ1wEoATAA','','',event)'>Yahoo Finance</a>
-			</span> - 
-			<span>
-				<a href='http://investing.money.msn.com/investments/stock-price?symbol=US:MSFT' onmousedown='return rwt(this,'','','','1','AFQjCNEfFyomk8qiV2jflJwb-c0yGaLmoA','7Vp3pZX-0ONljO0q4euTzQ','0CDYQ1wEoAjAA','','',event)'>MSN Money</a>
-			</span>
+			Data is not promised to be accurate. Most data delayed 15 or more minutes.
 		</div>
 	</div>
 <!--n-->
 </li>";
+
+$('#rso').prepend(domElement);
+}

@@ -96,7 +96,6 @@ var data = {
 
 $(document).bind("ajaxStop", function(){
     insertHTML(buildContainer());
-
 });
 
 function updateData() {
@@ -106,14 +105,7 @@ function updateData() {
 }
 
 /*
-Builds the HTML object to inject
-*/
-function buildContainer() {
-    
-}
-
-/*
-Given some HTML, insderts it into the correct location
+Given some HTML, inserts it into the correct location
 */
 function insertHTML(html) {
 
@@ -147,6 +139,14 @@ function buildURL(range) {
             }
         }
     }
+}
+
+/*
+Function to be called when the user selects a range button. Causes the image to
+be updated by replacing the image src URL with a new one
+*/
+function updateRange(range) {
+    $('#fmob_chart').attr('src', buildURL(range));
 }
 
 /*
