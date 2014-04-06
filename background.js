@@ -14,7 +14,7 @@ var data = {
     options: {
         width: "660",
         height: "192",
-        m: "bitstampUSD",
+        m: "bitfinexUSD",
         SubmitButton: "Draw",
         c: "",
         s: "",
@@ -142,6 +142,56 @@ function checkForBitcoin(subs){
     return false;
 }
 
+/**
+ *Returns the Difficulity rate currently for bitcoin
+ **/
+function getDifficulity(){
+    var difficulity;
+    $.ajax({
+	url:"http://blockchain.info/q/getdifficulty",
+	success: function( text ){
+	    difficulity = text;
+	}
+    });
+    return Number(difficulity).toPrecision(2);
+}
+
+/**
+ * Fetches the data for the card population
+ * returns an array with values
+ * avg, cvolume (currency volume), difficulty, ghashrate, high, low, and btc volume
+ *
+ * TODO: remove "async: false" when we get the dom elements
+ **/
+function getCardData(){
+    var result = [];
+    $.ajax({
+	url:"http://api.bitcoincharts.com/v1/markets.json", 
+	dataType: 'json',
+	async: false, 
+	success : function( json ){
+	    $.each( json , function(key,val){
+		if(val['symbol'] == data.options.m){
+		    result['high']   = val['high'];
+		    result['low']    = val['low'];
+		    result['avg']    = val['avg'];
+		    result['volume'] = val['volume'];
+		    result['cvolume']= val['currency_volume'];
+		}
+	    });
+	    
+	    $.ajax({
+		url:"http://blockchain.info/q/hashrate",
+		async: false,
+		success: function( text ){
+		    result['hashrate'] = Number(text).toPrecision(3);
+		}
+	    });
+	}
+    });
+    bkg.console.log(result);
+    return result;
+}
 /*
 Listener for requests coming from Google
 */
@@ -156,10 +206,8 @@ chrome.webRequest.onBeforeRequest.addListener(
             positive = checkForBitcoin(subs);
         }
         if(positive){
-	    //TODO:
-        //Call to method that triggers with positive result
-	    //will go here.
-	    fetchImage();
+	    //Positive bitcoin match
+	    getCardData();
             bkg.console.log("Bazinga: "+subs);
         }
         return;
