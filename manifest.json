@@ -1,0 +1,34 @@
+{
+  "manifest_version": 2,
+
+  "name": "BTC Search Ticker",
+  "description": "This extension inserts graphical Bitcoin market data into relevant Google Search results.",
+  "version": "1.0",
+  "author": "Matthew Herbst & Brandon Harmon",
+
+  "icons": { 
+    "16": "icon16.png",
+    "48": "icon48.png",
+    "128": "icon128.png" 
+  },
+
+  "options_page": "options.html",
+
+  "background": {
+    "persistent": false,
+    "scripts": ["background.js"]
+  },
+
+  "permissions": [
+    "alarms",
+    "*:google.com/*",
+    "storage",
+    "webRequest",
+    "http://api.bitcoincharts.com/v1/"
+  ],
+
+  "browser_action": {
+    "default_icon": "icon.png",
+    "default_popup": "popup.html"
+  }
+}
