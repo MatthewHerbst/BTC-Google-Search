@@ -74,8 +74,7 @@ function setOptimumDimensions(){
     bkg.console.log(window.width + ' - ' + window.height);
 }
 function optimizeURLS() {
-    setOptimumWidth();
-    setOptimumHeight();
+    setOptimumDimensions();
 }
 
 function buildURL(range) {
