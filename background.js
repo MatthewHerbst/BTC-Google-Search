@@ -1,3 +1,8 @@
+/*
+Keeps the lastUpdated variable in localStorage updated by attachig an event
+listener to storage that fires any time data is changed.
+*/
+
 //Used for logging to the background page (bkg.Console.log('foo'))
 var bkg = chrome.extension.getBackgroundPage();
 
@@ -9,8 +14,8 @@ var data = {
 
 //Keeps the lastUpdated variable up-to-date
 chrome.storage.onChanged.addListener(function(changes, namespace) {
-    data.lasUpdated = Date().toString();
-    
+    updateLastUpdated();
+
     /*
     for (key in changes) {
       var storageChange = changes[key];
@@ -30,13 +35,47 @@ function fetchImage(){
 	saveImage("success.png",tempImg);
 }
 
+/*
+Updates the lastUpdated value in storage to the current date/time
+*/
+function updateLastUpdated() {
+	var obj = {};
+	obj.lastUpdated = Date().toString();
+	chrome.storage.local.set(obj, function() {
+        bkg.console.log('Updated lastUpdated to ' + obj.lastUpdated);
+    });	
+}
+
+/*
+Given a list of image URLs, saves them using the imageURLs storage key
+Each image must have it's own unique storage key as well. For example:
+var imageURLs = [{id: URL}, {id: URL}, ...];
+*/
+function saveImageURLs(imageURLs) {
+	chrome.storage.local.set({imageURLs: imageURLs}, function() {
+        bkg.console.log('Updated lastUpdated to ' + obj.lastUpdated);
+    });	
+}
+
+/*
+Given an imageID and an image, saves the image using imageID as the storage key
+*/
 function saveImage(imageID, image) {
 	var obj = {};
 	obj[imageID] = image;
 	chrome.storage.local.set(obj, function() {
-        // Notify that we saved.
-        message('Image ' + imageID + " saved");
+        bkg.console.log('Image ' + imageID + ' saved');
     });	
+}
+
+/*
+Given an imageID, retrieves an image from storage if it exists
+*/
+function getImage(imageID) {
+	chrome.storage.local.get(imageID, function(items) {
+        bkg.console.log('Updated lastUpdated to ' + obj.lastUpdated);
+        return items;
+	});	
 }
 
 //Checks strings for matches to bitcoin
@@ -74,7 +113,3 @@ chrome.webRequest.onBeforeRequest.addListener(
     {urls: ["https://www.google.com/*"]},
     ["blocking"]
 );
-
-
-
-
