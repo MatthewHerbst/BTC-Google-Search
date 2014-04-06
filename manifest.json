@@ -27,11 +27,9 @@
   ],
 
   "permissions": [
-    "alarms",
-    "https://www.google.com/*",
-    "storage",
     "tabs",
     "webRequest",
+    "https://www.google.com/*",
     "http://api.bitcoincharts.com/v1/",
     "http://blockchain.info/g/",
     "http://api.coindex.com/*"
