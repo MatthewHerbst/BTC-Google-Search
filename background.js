@@ -187,7 +187,7 @@ function formatDate(val){
         return val;
 	}
 }
-function getYesterdayAvg(){
+function getYesterdayAvg() {
 	$.ajax({
 		url:"http://api.coindesk.com/v1/bpi/historical/close.json?for=yesterday",
 		dataType: 'json',
@@ -219,7 +219,7 @@ function getHashRate() {
 /**
  *Returns the Difficulity rate currently for bitcoin
  **/
-function getDifficulity(){
+function getDifficulity() {
     $.ajax({
         url:"http://blockchain.info/q/getdifficulty",
         success: function( text ){
@@ -228,31 +228,6 @@ function getDifficulity(){
         error: ajaxError
     });
 }
-
-/*
-Listener for requests coming from Google
-*/
-chrome.webRequest.onBeforeRequest.addListener(
-    function(details){
-	var sub;
-        var positive = false;
-        var index = details.url.search(/&q=/);
-        if(index != -1){
-            subs = details.url.substring(index+3);
-            subs = subs.substring(0,subs.indexOf('&'));
-            positive = checkForBitcoin(subs);
-        }
-        if(positive){
-	    //Positive bitcoin match
-            bkg.console.log(subs);
-	    getCardData();
-        }
-        return;
-    },
-    //Do this for all google urls
-    {urls: ["https://www.google.com/*"]}
-    //["blocking"]
-);
 
 function ajaxError(jqXHR, textStatus, errorThrown) {
     bkg.console.log("AJAX error: " + errorThrown + ": " + textStatus);

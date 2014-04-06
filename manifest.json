@@ -16,9 +16,9 @@
 
   "background": {
     "persistent" : true,
-    "scripts": ["jquery-2.1.0.min.js", "buildContainer.js", "background.js"]
+    "scripts": ["jquery-2.1.0.min.js", "background.js"]
   },
-  
+
   "permissions": [
     "alarms",
     "https://www.google.com/*",
