@@ -39,27 +39,27 @@ var data = {
         l: "0",
         p: "0",
         ranges: {
-            1d: {
+            d1: {
                 i: "",
                 r: ""
             },
-            5d: {
+            d5: {
                 i: "",
                 r: ""
             },
-            1m: {
+            m1: {
                 i: "",
                 r: ""
             },
-            6m: {
+            m6: {
                 i: "",
                 r: ""
             },
-            1y: {
+            y1: {
                 i: "",
                 r: ""
             },
-            5y: {
+            y5: {
                 i: "",
                 r: ""
             },
@@ -84,6 +84,7 @@ function setOptimumDimensions(){
     var window = chrome.app.window.current();
     bkg.console.log(window.width + ' - ' + window.height);
 }
+
 function optimizeURLS() {
     setOptimumDimensions();
 }
