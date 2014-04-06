@@ -5,7 +5,7 @@ for builds outside of the dev channel.
 */
 
 //Used for logging to the background page (bkg.Console.log('foo'))
-var bkg = chrome.runtime.getBackgroundPage();
+var bkg = chrome.extension.getBackgroundPage();
 
 
 //Core data
@@ -13,8 +13,8 @@ var data = {
     lastUpdated: {},
     baseURL: "http://bitcoincharts.com/charts/chart.png?",
     options: {
-        width: "940",
-        height: "",
+        width: "660",
+        height: "192",
         m: "bitstampUSD",
         SubmitButton: "Draw",
         c: "",
@@ -81,8 +81,9 @@ function init() {
 }
 
 function setOptimumDimensions(){
-    var window = chrome.app.window.current();
-    bkg.console.log(window.width + ' - ' + window.height);
+//    chrome.windows.getCurrent(function( window ){
+//		data. (window.width*.2) + ' - ' + window.height);
+//	});
 }
 
 function optimizeURLS() {
