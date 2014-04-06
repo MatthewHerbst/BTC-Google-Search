@@ -4,7 +4,7 @@ listener to storage that fires any time data is changed.
 */
 
 //Used for logging to the background page (bkg.Console.log('foo'))
-var bkg = chrome.extension.getBackgroundPage();
+var bkg = chrome.runtime.getBackgroundPage();
 
 
 //Core data
