@@ -19,6 +19,13 @@
     "scripts": ["jquery-2.1.0.min.js", "background.js"]
   },
 
+  "content_scripts": [
+    {
+      "matches": ["http://www.google.com/*"],
+      "js": ["jquery-2.1.0.min.js", "contenScript.js"]
+    }
+  ],
+
   "permissions": [
     "alarms",
     "https://www.google.com/*",
