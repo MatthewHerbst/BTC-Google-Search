@@ -31,6 +31,15 @@ chrome.webRequest.onBeforeRequest.addListener(
     {urls: ["https://www.google.com/*"]} //Do this for all google urls
 );
 
+chrome.tabs.onUpdated.addListener(function(tabId, changeInfo) {
+    if(changeInfo.status == 'complete'){
+	chrome.tabs.executeScript(tabId, {
+	    code: 'if (document.body.innerText.indexOf("bitcoin") != -1) {'+
+		'buildContainer();'+
+		'}'
+	});
+    }
+});
 //Core data
 var data = {
     lastUpdated: {},
