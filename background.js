@@ -103,6 +103,7 @@ function updateData() {
     getHashRate();
     getDifficulity();
     getCardData();
+    getYesterdayAvg();
 }
 
 /*
@@ -183,12 +184,37 @@ function getCardData(){
         error: ajaxError
     });
 }
+getYesterdayAvg();
 
+function formatDate(val){
+	if(val < 10){ return "0"+val;
+	}else{ return val;
+	}
+}
+function getYesterdayAvg(){
+	$.ajax({
+		url:"http://api.coindesk.com/v1/bpi/historical/close.json?for=yesterday",
+		dataType: 'json',
+		success: function ( json ){
+			var d = new Date();
+			d.setDate(d.getDate()-1);
+			var formatted = d.getFullYear()+'-'+formatDate(d.getMonth()+1)+'-'+formatDate((d.getDay()-1));
+			bkg.console.log(formatted +'-'+json);
+			result.yesterday_avg = data.json['bpi'][formatted];
+
+			getChange();
+		},
+		error: ajaxError
+	});
+}
+function getChange(){
+	result.change = result.close - result.yesterday_avg; 
+}
 function getHashRate() {
     $.ajax({
         url:"http://blockchain.info/q/hashrate",
         success: function( text ){
-            data.result.hasrate = Number(text).toPrecision(3);
+            data.result.hashrate = Number(text).toPrecision(3);
         },
         error: ajaxError
     });
