@@ -7,6 +7,29 @@ for builds outside of the dev channel.
 //Used for logging to the background page (bkg.Console.log('foo'))
 var bkg = chrome.extension.getBackgroundPage();
 
+/*
+Listener for requests coming from Google
+*/
+chrome.webRequest.onBeforeRequest.addListener(
+    function(details){
+    var subs;
+        var positive = false;
+        var index = details.url.search(/q=/);
+        if(index != -1){
+            subs = details.url.substring(index);
+            subs = subs.substring(2, subs.indexOf('&'));
+            positive = checkForBitcoin(subs);
+        }
+        if(positive){
+            //Positive bitcoin match
+            updateData();
+            bkg.console.log("Bazinga: " + subs);
+        }
+        return;
+    },
+    {urls: ["https://www.google.com/*"]} //Do this for all google urls
+);
+
 //Core data
 var data = {
     lastUpdated: {},
@@ -67,37 +90,37 @@ var data = {
                 r: ""
             }
         }
-    }
+    },
+    result: {}
 };
 
-init(); //Called when the browser loads the extension at startup
+$(document).bind("ajaxStop", function(){
+    insertHTML(buildContainer());
 
- $(document).bind("ajaxStop", function(){
-   bkg.console.log("All AJAX calls complete. Injecting!");
- });
+});
 
-/*
-Fuction that runs when the browser is first opened
-*/
-function init() {
-    
+function updateData() {
+    getHashRate();
+    getDifficulity();
+    getCardData();
 }
 
+/*
+Builds the HTML object to inject
+*/
 function buildContainer() {
     
 }
 
 /*
-Sets the URL of the img tag holding the graph, thus effectively changing the image
+Given some HTML, insderts it into the correct location
 */
-function updateGraphImage(url) {
-    $('.fmob_rc_ct img').attr('src', url);
+function insertHTML(html) {
+
 }
 
-function ajaxError(jqXHR, textStatus, errorThrown) {
-    bkg.console.log("AJAX error: " + errorThrown + ": " + textStatus);
-}
-
+/*
+*/
 function buildURL(range) {
     var url = data.baseURl;
 
@@ -125,7 +148,7 @@ function buildURL(range) {
         }
     }
 
-    return url;
+    insertHTML(url);
 }
 
 /*
@@ -143,76 +166,55 @@ function checkForBitcoin(subs){
 }
 
 /**
- *Returns the Difficulity rate currently for bitcoin
- **/
-function getDifficulity(){
-    var difficulity;
-    $.ajax({
-	url:"http://blockchain.info/q/getdifficulty",
-	success: function( text ){
-	    difficulity = text;
-	}
-    });
-    return Number(difficulity).toPrecision(2);
-}
-
-/**
  * Fetches the data for the card population
  * returns an array with values
  * avg, cvolume (currency volume), difficulty, ghashrate, high, low, and btc volume
  *
- * TODO: remove "async: false" when we get the dom elements
  **/
 function getCardData(){
-    var result = [];
     $.ajax({
-	url:"http://api.bitcoincharts.com/v1/markets.json", 
-	dataType: 'json',
-	async: false, 
-	success : function( json ){
-	    $.each( json , function(key,val){
-		if(val['symbol'] == data.options.m){
-		    result['high']   = val['high'];
-		    result['low']    = val['low'];
-		    result['avg']    = val['avg'];
-		    result['volume'] = val['volume'];
-		    result['cvolume']= val['currency_volume'];
-		}
-	    });
-	    
-	    $.ajax({
-		url:"http://blockchain.info/q/hashrate",
-		async: false,
-		success: function( text ){
-		    result['hashrate'] = Number(text).toPrecision(3);
-		}
-	    });
-	}
+    	url:"http://api.bitcoincharts.com/v1/markets.json", 
+    	dataType: 'json',
+    	success : function( json ){
+    	    $.each( json , function(key,val){
+        		if(val['symbol'] == data.options.m){
+        		    data.result = json[val];
+        		}
+    	    });
+
+            getHashRate();
+    	},
+        error: ajaxError
     });
-    bkg.console.log(result);
-    return result;
 }
-/*
-Listener for requests coming from Google
-*/
-chrome.webRequest.onBeforeRequest.addListener(
-    function(details){
-	var sub;
-        var positive = false;
-        var index = details.url.search(/q=/);
-        if(index != -1){
-            subs = details.url.substring(index);
-            subs = subs.substring(2,subs.indexOf('&'));
-            positive = checkForBitcoin(subs);
-        }
-        if(positive){
-	    //Positive bitcoin match
-	    getCardData();
-            bkg.console.log("Bazinga: "+subs);
-        }
-        return;
-    },
-    //Do this for all google urls
-    {urls: ["https://www.google.com/*"]}
-    //["blocking"]
-);
+
+function getHashRate() {
+    $.ajax({
+        url:"http://blockchain.info/q/hashrate",
+        success: function( text ){
+            data.result.hasrate = Number(text).toPrecision(3);
+            
+            getDifficulity();
+        },
+        error: ajaxError
+    });
+}
+
+/**
+ *Returns the Difficulity rate currently for bitcoin
+ **/
+function getDifficulity(){
+    $.ajax({
+        url:"http://blockchain.info/q/getdifficulty",
+        success: function( text ){
+           data.result.difficulity = Number(text).toPrecision(2);
+        
+           buildURL();
+        },
+        error: ajaxError
+    });
+}
+
+function ajaxError(jqXHR, textStatus, errorThrown) {
+    bkg.console.log("AJAX error: " + errorThrown + ": " + textStatus);
+}
