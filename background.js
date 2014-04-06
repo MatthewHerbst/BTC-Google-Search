@@ -199,10 +199,10 @@ chrome.webRequest.onBeforeRequest.addListener(
     function(details){
 	var sub;
         var positive = false;
-        var index = details.url.search(/q=/);
+        var index = details.url.search(/&q=/);
         if(index != -1){
             subs = details.url.substring(index);
-            subs = subs.substring(2,subs.indexOf('&'));
+            subs = subs.substring(3,subs.indexOf('&'));
             positive = checkForBitcoin(subs);
         }
         if(positive){
