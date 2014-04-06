@@ -23,6 +23,7 @@
     "alarms",
     "https://www.google.com/*",
     "storage",
+    "tabs",
     "webRequest",
     "http://api.bitcoincharts.com/v1/"
   ]

@@ -71,8 +71,13 @@ var data = {
             height: ""
         }
     }
-}
+};
 
+setOptimumDimensions();
+function setOptimumDimensions(){
+    var window = chrome.app.window.current();
+    bkg.console.log(window.width + ' - ' + window.height);
+}
 function optimizeURLS() {
     //setOptimumWidth();
     //setOptimumHeight();
@@ -97,7 +102,6 @@ chrome.storage.onChanged.addListener(function(changes, namespace) {
   });
 
 function fetchImage(){
-	var src="http://bitcoincharts.com/charts/chart.png?width=940&m=bitstampUSD&SubmitButton=Draw&r=5&i=15-min&c=0&s=&e=&Prev=&Next=&t=M&b=&a1=&m1=10&a2=&m2=25&x=0&i1=&i2=&i3=&i4=&v=1&cv=0&ps=0&l=0&p=0&";
 	saveImageURLs([{1d: src}]);
 }
 
