@@ -68,7 +68,8 @@ var data = {
             }
         }
     },
-    result: {}
+    result: {},
+    isBitcoin : false
 };
 
 /*
@@ -94,6 +95,7 @@ $(document).ready(function() {
                 subs = subs.substring(2, subs.indexOf('&'));
                 positive = checkForBitcoin(subs);
             }
+	    data.isBitcoin = positive;
             if(positive){
                 //Positive bitcoin match
                 updateData();
@@ -104,6 +106,13 @@ $(document).ready(function() {
         },
         {urls: ["https://www.google.com/*"]} //Do this for all google urls
     );
+
+chrome.tabs.onUpdated.addListener(function(tabId, changeInfo) {
+    if (changeInfo.status === 'complete' && data.isBitcoin) {
+        buildContainer();
+    }
+});
+
 });
 
 /*
@@ -263,7 +272,7 @@ function buildContainer() {
         "<span>" + data.options.m + ": </span>",
         "<span>BTC</span>",
         "<span> - </span> ",
-        "<span class='fac-lt' data-symbol='BTC'>" + d.toLocalString() + "</span> ",
+        "<span class='fac-lt' data-symbol='BTC'>" + d.toLocaleString() + "</span> ",
         "ET",
         "</div>",
         "<div class='cv_cb'>",
@@ -274,7 +283,7 @@ function buildContainer() {
         "</div>",
         "<div class='fmob_r_ct'>",
         "<div class='fmob_rc_ct'>",
-        "<a href='http://bitcoincharts.com/markets/" + result.symbol + ".html'><img src='"+buildURL("d1")+"' style='border:0' alt='Bitcoin Market Data' id='fmob_chart'/></a><div id='fmob_cb_container'>" ,                                                 
+        "<a href='http://bitcoincharts.com/markets/" + data.result.symbol + ".html'><img src='"+buildURL("d1")+"' style='border:0' alt='Bitcoin Market Data' id='fmob_chart'/></a><div id='fmob_cb_container'>" ,                                                 
         "<div class='fmob_cb_l' onclick='updateRange(d1)' data-ved='0CCsQ-BMoADAA'>",
         "<span class='fmob_cb_np ksb mini' style='display:none'>1d</span>",
         "<span class='fmob_cb_pr ksb ksbs mini'>1d</span>",
@@ -347,6 +356,6 @@ function buildContainer() {
         "<!--n-->",
         "</li>"
     ].join('\n');
-
+	bkg.console.log("Prepending");
     $('#rso').prepend(domElement);
 }
