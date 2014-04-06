@@ -256,7 +256,7 @@ var domElement = "<li class='mod g tpo knavi obcontainer'>
                                 <div class='cv_card_content'>
                                     <div class='fmob_pl vk_h'>
                                         <span class='vk_bk fmob_pr fac-l' data-symbol='BTC' data-value='" + data.result.close + "'> " + data.result.close + "</span>
-                                        <span class='vk_fin_dn fac-c' data-symbol='BTC'>-" + data.result.change + " (" + ((data.result.change >= 0) ? "+" : "-") + data.result.change + "%)</span>
+                                        <span class='vk_fin_dn fac-c' data-symbol='BTC'>-" + data.result.change + " (" + ((data.result.change >= 0) ? "+" : "-"0) + data.result.change + "%)</span>
                                     </div>
                                     <div class='fmob_r_ct'>
                                         <div class='fmob_rc_ct'>
@@ -335,6 +335,5 @@ var domElement = "<li class='mod g tpo knavi obcontainer'>
     </div>
 <!--n-->
 </li>";
-
 $('#rso').prepend(domElement);
 }
