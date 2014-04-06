@@ -106,13 +106,6 @@ function updateData() {
 }
 
 /*
-Given some HTML, inserts it into the correct location
-*/
-function insertHTML(html) {
-
-}
-
-/*
 */
 function buildURL(range) {
     var url = data.baseURl;
@@ -232,6 +225,7 @@ function getDifficulity(){
         error: ajaxError
     });
 }
+
 /*
 Listener for requests coming from Google
 */
