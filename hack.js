@@ -219,7 +219,7 @@ function buildContainer() {
     console.log("Date built");
 
     var domElement = [
-        "<li class='mod g tpo knavi obcontainer'>",
+        "<li class='mod g tpo knavi obcontainer' style='list-style-type: none'>",
 	"<style>"+googcss+"</style>",
         "<!--m-->",
         "<div data-hveid='40'>",
