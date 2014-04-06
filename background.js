@@ -9,7 +9,74 @@ var bkg = chrome.extension.getBackgroundPage();
 
 //Core data
 var data = {
-	lastUpdated: "Not yet updated",
+    baseURL: "http://bitcoincharts.com/charts/chart.png
+        ?width=940
+        &m=bitstampUSD
+        &SubmitButton=Draw
+        &r=5&i=15-min
+        &c=0
+        &s=
+        &e=
+        &Prev=
+        &Next=
+        &t=M
+        &b=
+        &a1=
+        &m1=10
+        &a2=
+        &m2=25
+        &x=0
+        &i1=
+        &i2=
+        &i3=
+        &i4=
+        &v=1
+        &cv=0
+        &ps=0
+        &l=0
+        &p=0&",
+	urls: {
+        formats: {
+            1d: {
+                i: "",
+                r: ""
+            },
+            5d: {
+                i: "",
+                r: ""
+            },
+            1m: {
+                i: "",
+                r: ""
+            },
+            6m: {
+                i: "",
+                r: ""
+            },
+            1y: {
+                i: "",
+                r: ""
+            },
+            5y: {
+                i: "",
+                r: ""
+            },
+            max: {
+                i: "",
+                r: ""
+            }
+        },
+        options {
+            width: "",
+            height: ""
+        }
+    }
+}
+
+function optimizeURLS() {
+    setOptimumWidth();
+    setOptimumHeight();
+    for()
 }
 
 //Keeps the lastUpdated variable up-to-date
@@ -53,7 +120,7 @@ var imageURLs = [{id: URL}, {id: URL}, ...];
 */
 function saveImageURLs(imageURLs) {
 	chrome.storage.local.set({imageURLs: imageURLs}, function() {
-        bkg.console.log('Updated lastUpdated to ' + obj.lastUpdated);
+        bkg.console.log('Image URLS saved');
     });	
 }
 
@@ -72,9 +139,9 @@ function saveImage(imageID, image) {
 Given an imageID, retrieves an image from storage if it exists
 */
 function getImage(imageID) {
-	chrome.storage.local.get(imageID, function(items) {
+	chrome.storage.local.get(imageID, function(image) {
         bkg.console.log('Updated lastUpdated to ' + obj.lastUpdated);
-        return items;
+        return image;
 	});	
 }
 
