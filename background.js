@@ -6,6 +6,7 @@ for builds outside of the dev channel.
 
 //Used for logging to the background page (bkg.Console.log('foo'))
 var bkg = chrome.extension.getBackgroundPage();
+var market = "bitfinexUSD";
 
 //Core data
 var data = {
@@ -14,7 +15,7 @@ var data = {
     options: {
         width: "660",
         height: "192",
-        m: "bitstampUSD",
+        m: market,
         SubmitButton: "Draw",
         c: "",
         s: "",
@@ -144,6 +145,48 @@ function checkForBitcoin(subs){
     return false;
 }
 
+/**
+ * Fetches the data for the card population
+ **/
+getCardData();
+function getCardData(){
+	var result = [];
+	$.ajax({
+		url:"http://api.bitcoincharts.com/v1/markets.json", 
+		dataType: 'json',
+		async: false,
+		success : function(data){
+			$.each( data, function(key,val){
+				if(val['symbol'] == market){
+					result['high']   = val['high'];
+					result['low']    = val['low'];
+					result['avg']    = val['avg'];
+					result['volume'] = val['volume'];
+					result['cvolume']= val['currency_volume'];
+				}
+			});
+		}
+	});
+
+	$.ajax({
+		url:"http://blockchain.info/q/getdifficulty",
+		async: false,
+		success: function(data){
+			result['difficulty'] = data;
+		}
+	});
+
+	$.ajax({
+		url:"http://blockchain.info/q/hashrate",
+		async: false,
+		success: function(data){
+			result['ghashrate'] = data;
+		}
+		});
+
+	bkg.console.log(result);
+	return result;
+}
 /*
 Listener for requests coming from Google
 */
