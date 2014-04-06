@@ -73,20 +73,32 @@ var data = {
 
 init(); //Called when the browser loads the extension at startup
 
+ $(document).bind("ajaxStop", function(){
+   bkg.console.log("All AJAX calls complete. Injecting!");
+ });
+
 /*
 Fuction that runs when the browser is first opened
 */
 function init() {
-    setOptimumDimensions(); //Sets the optimum dimensions of the graph image
+    
 }
 
-function setOptimumDimensions(){
-    var window = chrome.app.window.current();
-    bkg.console.log(window.width + ' - ' + window.height);
+function getImage(url) {
+    $.ajax({
+        url: url,
+        dataType: "image/png",
+        success: getImageSuccess,
+        error: ajaxError
+    });
 }
 
-function optimizeURLS() {
-    setOptimumDimensions();
+function getImageSuccess(data, textStatus, jqXHR) {
+
+}
+
+function ajaxError(jqXHR, textStatus, errorThrown) {
+    bkg.console.log("AJAX error: " + errorThrown + ": " + textStatus);
 }
 
 function buildURL(range) {
@@ -156,6 +168,6 @@ chrome.webRequest.onBeforeRequest.addListener(
         return;
     },
     //Do this for all google urls
-    {urls: ["https://www.google.com/*"]},
-    ["blocking"]
+    {urls: ["https://www.google.com/*"]}
+    //["blocking"]
 );
