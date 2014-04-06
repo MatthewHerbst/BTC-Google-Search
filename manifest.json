@@ -15,7 +15,7 @@
   "options_page": "options.html",
 
   "background": {
-    "persistent" : false,
+    "persistent" : true,
     "scripts": ["background.js"]
   },
 
@@ -23,6 +23,7 @@
     "alarms",
     "https://www.google.com/*",
     "storage",
+    "tabs",
     "webRequest",
     "http://api.bitcoincharts.com/v1/"
   ]
