@@ -108,7 +108,7 @@ function updateData() {
 /*
 */
 function buildURL(range) {
-    var url = data.baseURl;
+    var url = data.baseURL;
     var first = true; //Control the placement of '&'
     for(var key in data.options) {
         if(data.options.hasOwnProperty(key) && key) {
@@ -261,7 +261,7 @@ function buildContainer() {
                                         <div class='fmob_r_ct'>\
                                             <div class='fmob_rc_ct'>\
                                                 <a href='http://bitcoincharts.com/markets/" + result.symbol + ".html'>\
-                                                     <img src='"+buildURL("d1")+"' style='border:0' alt='Bitcoin Market Data' id='fmob_chart'></a>\
+                                                     <img src='" + buildURL("d1") + "' style='border:0' alt='Bitcoin Market Data' id='fmob_chart'></a>\
                                                 <div id='fmob_cb_container'>\
                                                     <div class='fmob_cb_l' onclick='updateRange(d1)' data-ved='0CCsQ-BMoADAA'>\
                                                         <span class='fmob_cb_np ksb mini' style='display:none'>1d</span>\
