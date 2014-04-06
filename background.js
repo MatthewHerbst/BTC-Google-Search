@@ -147,8 +147,6 @@ function buildURL(range) {
             }
         }
     }
-
-    insertHTML(url);
 }
 
 /*
@@ -181,8 +179,6 @@ function getCardData(){
         		    data.result = json[val];
         		}
     	    });
-
-            getHashRate();
     	},
         error: ajaxError
     });
@@ -193,8 +189,6 @@ function getHashRate() {
         url:"http://blockchain.info/q/hashrate",
         success: function( text ){
             data.result.hasrate = Number(text).toPrecision(3);
-            
-            getDifficulity();
         },
         error: ajaxError
     });
@@ -208,8 +202,6 @@ function getDifficulity(){
         url:"http://blockchain.info/q/getdifficulty",
         success: function( text ){
            data.result.difficulity = Number(text).toPrecision(2);
-        
-           buildURL();
         },
         error: ajaxError
     });
