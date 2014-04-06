@@ -118,7 +118,11 @@ $(document).ready(function() {
 
 	chrome.tabs.onUpdated.addListener(function(tabId, changeInfo) {
     if (changeInfo.status === 'complete' && data.isBitcoin) {
-        buildContainer();
+	                if (changeInfo.status === 'complete' && data.isBitcoin) {
+                        var domelement = buildContainer();
+                        chrome.tabs.executeScript(null, {file: "hack.js"});
+            }
+
     }
 });
 

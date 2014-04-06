@@ -16,12 +16,13 @@
 
   "content_scripts": [
     {
-      "matches": ["http://www.google.com/*"],
-      "js": ["jquery-2.1.0.min.js", "contentScript.js"]
+      "matches": ["https://www.google.com/*"],
+      "js": ["jquery-2.1.0.min.js",  "hack.js"]
     }
   ],
 
   "permissions": [
+    "activeTab",
     "tabs",
     "webRequest",
     "https://www.google.com/*",
