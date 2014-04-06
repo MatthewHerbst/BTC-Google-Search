@@ -76,6 +76,8 @@ var data = {
 Don't try to do any binds until the page is ready
 */
 $(document).ready(function() {
+    bkg.console.log("Document ready. Attaching listeners");
+
     $(document).bind("ajaxStop", function() {
         bkg.console.log("Starting to build");
         buildContainer();
@@ -87,27 +89,27 @@ $(document).ready(function() {
     */
     chrome.webRequest.onBeforeRequest.addListener(
         function(details){
-        var subs;
+            bkg.console.log("Detected request to be sent to google");
+            var subs;
             var positive = false;
             var index = details.url.search(/q=/);
-            if(index != -1){
+            if(index != -1) {
                 subs = details.url.substring(index);
                 subs = subs.substring(2, subs.indexOf('&'));
                 positive = checkForBitcoin(subs);
             }
 	    data.isBitcoin = positive;
-            if(positive){
-                //Positive bitcoin match
+            if(positive){ //Positive bitcoin match
+                bkg.console.log("Request contained match for bitcoin or btc");
                 updateData();
                 bkg.console.log("Bazinga: " + subs);
-            //buildContainer();
             }
             return;
         },
         {urls: ["https://www.google.com/*"]} //Do this for all google urls
     );
 
-chrome.tabs.onUpdated.addListener(function(tabId, changeInfo) {
+	chrome.tabs.onUpdated.addListener(function(tabId, changeInfo) {
     if (changeInfo.status === 'complete' && data.isBitcoin) {
         buildContainer();
     }
@@ -119,16 +121,19 @@ chrome.tabs.onUpdated.addListener(function(tabId, changeInfo) {
 Call all the data update AJAX calls
 */
 function updateData() {
+    bkg.console.log("Starting to fire AJAX data updates in updateData()");
     getHashRate();
     getDifficulity();
     getCardData();
     getYesterdayAvg();
+    bkg.console.log("Done firing AJAX data updates in updateData()");
 }
 
 /*
 Generate a URL to use to get an image of BTC market data for the desired range
 */
 function buildURL(range) {
+    bkg.console.log("Entered buildURL()");
     var url = data.baseURL;
 
     var first = true; //Control the placement of '&'
@@ -154,6 +159,8 @@ function buildURL(range) {
             }
         }
     }
+
+    bkg.console.log("Leaving buildURL() and returning URL: " + url);
     return url;
 }
 
@@ -162,7 +169,9 @@ Function to be called when the user selects a range button. Causes the image to
 be updated by replacing the image src URL with a new one
 */
 function updateRange(range) {
+    bkg.console.log("Entered updateRange() with new range: " + range);
     $('#fmob_chart').attr('src', buildURL(range));
+    bkg.console.log("Range update complete");
 }
 
 /*
@@ -170,13 +179,13 @@ Checks strings for matches to bitcoin
 */
 function checkForBitcoin(subs){
     subs = subs.toLowerCase();
-    if( (subs == 'bit%20coin') ||
-        (subs == 'bit+coin')   ||
-        (subs == 'bitcoin')    ||
-        (subs == 'btc')){
-        return true;
-    }
-    return false;
+    
+    return  (
+                (subs == 'bit%20coin') || 
+                (subs == 'bit+coin')   ||
+                (subs == 'bitcoin')    ||
+                (subs == 'btc')
+            );
 }
 
 /**
@@ -208,6 +217,7 @@ function formatDate(val){
         return val;
 	}
 }
+
 function getYesterdayAvg() {
 	$.ajax({
 		url:"http://api.coindesk.com/v1/bpi/historical/close.json?for=yesterday",
@@ -255,8 +265,12 @@ function ajaxError(jqXHR, textStatus, errorThrown) {
 }
 
 function buildContainer() {
+    bkg.console.log("Inside of buildContainer()");
+
     var d = new Date();
-    var burl = buildURL("d1");
+
+    bkg.console.log("Date built");
+
     var domElement = [
         "<li class='mod g tpo knavi obcontainer'>",
         "<!--m-->",
@@ -356,6 +370,8 @@ function buildContainer() {
         "<!--n-->",
         "</li>"
     ].join('\n');
-	bkg.console.log("Prepending");
+    bkg.console.log("object built. injecting...");
     $('#rso').prepend(domElement);
+
+    bkg.console.log("object injected");
 }
