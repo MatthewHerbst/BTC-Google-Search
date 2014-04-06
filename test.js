@@ -1,3 +1,4 @@
+var d = new Date();
 var domElement = "<li class='mod g tpo knavi obcontainer'>
 <!--m-->
 	<div data-hveid='40'>
@@ -8,18 +9,18 @@ var domElement = "<li class='mod g tpo knavi obcontainer'>
 						<div class='cv_b'>
 							<div class='cm_gesture_hint' id='cm_gesture_hint'></div>
 							<div class='cv_ch vk_sh'>
-								<div class='vk_h fmob_title'>Microsoft Corporation</div>
-								<span>NASDAQ: </span>
-								<span>MSFT</span>
+								<div class='vk_h fmob_title'>Bitcoin</div>
+								<span>" + data.options.m + ": </span>
+								<span>BTC</span>
 								<span> - </span> 
-								<span class='fac-lt' data-symbol='MSFT'>Apr 4 4:00 PM</span> 
+								<span class='fac-lt' data-symbol='BTC'>" + d.toLocalString() + "</span> 
 								ET
 							</div>
 							<div class='cv_cb'>
 								<div class='cv_card_content'>
 									<div class='fmob_pl vk_h'>
-										<span class='vk_bk fmob_pr fac-l' data-symbol='MSFT' data-value='39.87'>39.87</span>
-										<span class='vk_fin_dn fac-c' data-symbol='MSFT'>-1.14 (-2.78%)</span>
+										<span class='vk_bk fmob_pr fac-l' data-symbol='BTC' data-value='" + data.resuult.close + "'> " + data.resuult.close + "</span>
+										<span class='vk_fin_dn fac-c' data-symbol='BTC'>-1.14 (-2.78%)</span>
 									</div>
 									<div class='fmob_r_ct'>
 										<div class='fmob_rc_ct'>
