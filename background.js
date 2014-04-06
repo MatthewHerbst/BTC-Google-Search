@@ -1,6 +1,7 @@
 /*
-Keeps the lastUpdated variable in localStorage updated by attachig an event
-listener to storage that fires any time data is changed.
+Eventually this should become an event driven page instead of a pure background
+page. However, only webRequest is currently not availble on event driven pages
+for builds outside of the dev channel.
 */
 
 //Used for logging to the background page (bkg.Console.log('foo'))
@@ -9,33 +10,34 @@ var bkg = chrome.runtime.getBackgroundPage();
 
 //Core data
 var data = {
+    lastUpdated: {},
     baseURL: "http://bitcoincharts.com/charts/chart.png?",
     options: {
-        "width": "940",
-        "height": "",
-        "m": "bitstampUSD",
-        "SubmitButton": "Draw",
-        "c": "",
-        "s": "",
-        "e": "",
-        "Prev": "",
-        "Next": "",
-        "t": "M",
-        "b": "",
-        "a1": "",
-        "m1": "10",
-        "a2": "",
-        "m2": "25",
-        "x": "0",
-        "i1": "",
-        "i2": "",
-        "i3": "",
-        "i4": "",
-        "v": "1",
-        "cv": "0",
-        "ps": "0",
-        "l": "0",
-        "p": "0",
+        width: "940",
+        height: "",
+        m: "bitstampUSD",
+        SubmitButton: "Draw",
+        c: "",
+        s: "",
+        e: "",
+        Prev: "",
+        Next: "",
+        t: "M",
+        b: "",
+        a1: "",
+        m1: "10",
+        a2: "",
+        m2: "25",
+        x: "0",
+        i1: "",
+        i2: "",
+        i3: "",
+        i4: "",
+        v: "1",
+        cv: "0",
+        ps: "0",
+        l: "0",
+        p: "0",
         ranges: {
             1d: {
                 i: "",
@@ -69,7 +71,15 @@ var data = {
     }
 };
 
-setOptimumDimensions();
+init(); //Called when the browser loads the extension at startup
+
+/*
+Fuction that runs when the browser is first opened
+*/
+function init() {
+    setOptimumDimensions(); //Sets the optimum dimensions of the graph image
+}
+
 function setOptimumDimensions(){
     var window = chrome.app.window.current();
     bkg.console.log(window.width + ' - ' + window.height);
@@ -83,82 +93,34 @@ function buildURL(range) {
 
     var first = true; //Control the placement of '&'
     for(var key in data.options) {
-        if(data.options.hasOwnProperty(key)) { //Make sure it's a real property
+        if(data.options.hasOwnProperty(key) && key) {
+            if(key == "ranges") {
+                if(first) {
+                    url += "i";
+                    first = false;
+                } else {
+                    url += "&i";
+                }
+
+                url += "=" + data.options.ranges[range].i;
+                url += "&r" + "=" + data.options.ranges[range].r;
+            }
+
             if(!first) {
-                url += "&" + key + data.options.key;
+                url += "&" + key + "=" + data.options.key;
             } else {
-                url += key + data.options.key;
+                url += key + "=" + data.options.key;
                 first = false;
             }
         }
     }
-}
 
-//Keeps the lastUpdated variable up-to-date
-chrome.storage.onChanged.addListener(function(changes, namespace) {
-    updateLastUpdated();
-
-    /*
-    for (key in changes) {
-      var storageChange = changes[key];
-      console.log('Storage key "%s" in namespace "%s" changed. ' +
-                  'Old value was "%s", new value is "%s".',
-                  key,
-                  namespace,
-                  storageChange.oldValue,
-                  storageChange.newValue);
-    }
-    */
-  });
-
-function fetchImage(){
-	saveImageURLs([{1d: src}]);
+    return url;
 }
 
 /*
-Updates the lastUpdated value in storage to the current date/time
+Checks strings for matches to bitcoin
 */
-function updateLastUpdated() {
-	var obj = {};
-	obj.lastUpdated = Date().toString();
-	chrome.storage.local.set(obj, function() {
-        bkg.console.log('Updated lastUpdated to ' + obj.lastUpdated);
-    });	
-}
-
-/*
-Given a list of image URLs, saves them using the imageURLs storage key
-Each image must have it's own unique storage key as well. For example:
-var imageURLs = [{id: URL}, {id: URL}, ...];
-*/
-function saveImageURLs(imageURLs) {
-	chrome.storage.local.set({imageURLs: imageURLs}, function() {
-        bkg.console.log('Image URLS saved');
-    });	
-}
-
-/*
-Given an imageID and an image, saves the image using imageID as the storage key
-*/
-function saveImage(imageID, image) {
-	var obj = {};
-	obj[imageID] = image;
-	chrome.storage.local.set(obj, function() {
-        bkg.console.log('Image ' + imageID + ' saved');
-    });	
-}
-
-/*
-Given an imageID, retrieves an image from storage if it exists
-*/
-function getImage(imageID) {
-	chrome.storage.local.get(imageID, function(image) {
-        bkg.console.log('Updated lastUpdated to ' + obj.lastUpdated);
-        return image;
-	});	
-}
-
-//Checks strings for matches to bitcoin
 function checkForBitcoin(subs){
     subs = subs.toLowerCase();
     if( (subs == 'bit%20coin') ||
@@ -170,7 +132,9 @@ function checkForBitcoin(subs){
     return false;
 }
 
-//Listener for requests coming from Google
+/*
+Listener for requests coming from Google
+*/
 chrome.webRequest.onBeforeRequest.addListener(
     function(details){
 	var sub;
@@ -182,7 +146,8 @@ chrome.webRequest.onBeforeRequest.addListener(
             positive = checkForBitcoin(subs);
         }
         if(positive){
-	    //Call to method that triggers with positive result
+	    //TODO:
+        //Call to method that triggers with positive result
 	    //will go here.
 	    fetchImage();
             bkg.console.log("Bazinga: "+subs);
