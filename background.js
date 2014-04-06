@@ -99,9 +99,9 @@ $(document).ready(function() {
             bkg.console.log("Detected request to be sent to google");
             var subs;
             var positive = false;
-            var index = details.url.search(/q=/);
+            var index = details.url.search(/&q=/);
             if(index != -1) {
-                subs = details.url.substring(index);
+                subs = details.url.substring(index+1);
                 subs = subs.substring(2, subs.indexOf('&'));
                 positive = checkForBitcoin(subs);
             }
