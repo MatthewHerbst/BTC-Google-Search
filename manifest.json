@@ -14,16 +14,23 @@
 
   "options_page": "options.html",
 
+  "background": {
+    "persistent" : true,
+    "scripts": ["jquery-2.1.0.min.js", "background.js"]
+  },
+
   "content_scripts": [
     {
-      "matches": ["http://www.google.com/*"],
-      "js": ["jquery-2.1.0.min.js", "contentScript.js"]
+      "matches": ["http://www.google.com/*", "https://www.google.com/*"],
+      "js": ["jquery-2.1.0.min.js", "contentScript.js"],
+      "run_at": "document_end"
     }
   ],
 
   "permissions": [
     "tabs",
     "webRequest",
+    "http://www.google.com/*",
     "https://www.google.com/*",
     "http://api.bitcoincharts.com/v1/",
     "http://blockchain.info/g/",

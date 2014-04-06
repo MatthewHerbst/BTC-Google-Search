@@ -1,11 +1,4 @@
 /*
-Permissions needed in manifest for this to run in bg:
-
-  "background": {
-    "persistent" : true,
-    "scripts": ["jquery-2.1.0.min.js", "background.js"]
-  },
-
 Eventually this should become an event driven page instead of a pure background
 page. However, only webRequest is currently not availble on event driven pages
 for builds outside of the dev channel.
@@ -16,63 +9,20 @@ var bkg = chrome.extension.getBackgroundPage();
 
 //Core data
 var data = {
-    lastUpdated: {},
     baseURL: "http://bitcoincharts.com/charts/chart.png?",
     options: {
-        width: "660",
-        height: "192",
-        m: "bitfinexUSD",
-        SubmitButton: "Draw",
-        c: "",
-        s: "",
-        e: "",
-        Prev: "",
-        Next: "",
-        t: "M",
-        b: "",
-        a1: "",
-        m1: "10",
-        a2: "",
-        m2: "25",
-        x: "0",
-        i1: "",
-        i2: "",
-        i3: "",
-        i4: "",
-        v: "1",
-        cv: "0",
-        ps: "0",
-        l: "0",
-        p: "0",
+        width: "660", height: "192", m: "bitfinexUSD", SubmitButton: "Draw", c: "",
+        s: "", e: "", Prev: "", Next: "", t: "M", b: "", a1: "", m1: "10", a2: "",
+        m2: "25", x: "0", i1: "", i2: "", i3: "", i4: "", v: "1", cv: "0", ps: "0",
+        l: "0", p: "0",
         ranges: {
-            d1: {
-                i: "",
-                r: ""
-            },
-            d5: {
-                i: "",
-                r: ""
-            },
-            m1: {
-                i: "",
-                r: ""
-            },
-            m6: {
-                i: "",
-                r: ""
-            },
-            y1: {
-                i: "",
-                r: ""
-            },
-            y5: {
-                i: "",
-                r: ""
-            },
-            max: {
-                i: "",
-                r: ""
-            }
+            d1: {i: "1", r: "60"},
+            d5: {i: "5", r: "60"},
+            m1: {i: "30", r: "60"},
+            m6: {i: "180", r: "60"},
+            y1: {i: "365", r: "60"},
+            y5: {i: "1825", r: "60"},
+            max: {i: "0", r: "60"}
         }
     },
     result: {},
@@ -85,44 +35,61 @@ Don't try to do any binds until the page is ready
 $(document).ready(function() {
     bkg.console.log("Document ready. Attaching listeners");
 
-    $(document).bind("ajaxStop", function() {
-        bkg.console.log("Starting to build");
-        buildContainer();
-        bkg.console.log("Finished");
+    //Event listner for when all AJAX calls have completed
+    //$(document).on("ajaxStop", sendContainerToTabs);
+    $(document).ajaxStop(sendContainerToTabs);
+
+    //Event listener for requests going to Google
+    chrome.webRequest.onBeforeRequest.addListener(detectSearch, {urls: ["https://www.google.com/*"]});
+
+    //Event listner for when tab data changes (not all searches do a new request due to caching)
+    chrome.tabs.onUpdated.addListener(function(tabId, info, tab){detectSearch(info)});
+});
+
+/*
+Generates the container and sends it to the tab that updated
+*/
+function sendContainerToTabs() {
+    bkg.console.log("Building container before broadcast");
+    var domElementString = buildContainer();
+    bkg.console.log("Build complete. Sending HTML to all qualifying tabs");
+
+    chrome.tabs.query({status: "complete", url: "*.google.com/*"}, function(tabArray){
+        for(var t = 0; t < tabArray.length; ++t) {
+            chrome.tabs.sendMessage(data.tabId, {
+                html: domElementString
+            });
+            bkg.console.log("Message sent to tab: " + tabArray[t].id);
+        }
     });
 
-    /*
-    Listener for requests coming from Google
-    */
-    chrome.webRequest.onBeforeRequest.addListener(
-        function(details){
-            bkg.console.log("Detected request to be sent to google");
-            var subs;
-            var positive = false;
-            var index = details.url.search(/q=/);
-            if(index != -1) {
-                subs = details.url.substring(index);
-                subs = subs.substring(2, subs.indexOf('&'));
-                positive = checkForBitcoin(subs);
-            }
-	    data.isBitcoin = positive;
-            if(positive){ //Positive bitcoin match
-                bkg.console.log("Request contained match for bitcoin or btc");
-                updateData();
-                bkg.console.log("Bazinga: " + subs);
-            }
-            return;
-        },
-        {urls: ["https://www.google.com/*"]} //Do this for all google urls
-    );
+    bkg.console.log("All container messages sent");
+}
 
-	chrome.tabs.onUpdated.addListener(function(tabId, changeInfo) {
-    if (changeInfo.status === 'complete' && data.isBitcoin) {
-        buildContainer();
+/*
+Given information about an event about to take place, determines if that event
+is a Google search for BTC/Bitcoin
+*/
+function detectSearch(details) {
+    if(details.hasOwnProperty('url')) {
+        bkg.console.log("Detected request to be sent to google");
+        var subs;
+        var positive = false;
+        var index = details.url.search(/&q=/);
+        if(index != -1) {
+            subs = details.url.substring(index+1);
+            subs = subs.substring(2, subs.indexOf('&'));
+            positive = checkForBitcoin(subs);
+        }
+        data.isBitcoin = positive;
+        if(positive){ //Positive bitcoin match
+            bkg.console.log("Request contained match for bitcoin or btc");
+            bkg.console.log("Running updateData()");
+            updateData();
+            //bkg.console.log("Bazinga: " + subs);
+        }
     }
-});
-
-});
+}
 
 /*
 Call all the data update AJAX calls
@@ -145,7 +112,7 @@ function buildURL(range) {
 
     var first = true; //Control the placement of '&'
     for(var key in data.options) {
-        if(data.options.hasOwnProperty(key) && key) {
+        if(data.options.hasOwnProperty(key)) {
             if(key == "ranges") {
                 if(first) {
                     url += "i";
@@ -156,13 +123,13 @@ function buildURL(range) {
 
                 url += "=" + data.options.ranges[range].i;
                 url += "&r" + "=" + data.options.ranges[range].r;
-            }
-
-            if(!first) {
-                url += "&" + key + "=" + data.options.key;
             } else {
-                url += key + "=" + data.options.key;
-                first = false;
+                if(!first) {
+                    url += "&" + key + "=" + data.options.key;
+                } else {
+                    url += key + "=" + data.options.key;
+                    first = false;
+                }
             }
         }
     }
@@ -202,15 +169,22 @@ function checkForBitcoin(subs){
  *
  **/
 function getCardData(){
+    bkg.console.log("Entered getCardData()");
     $.ajax({
     	url:"http://api.bitcoincharts.com/v1/markets.json", 
     	dataType: 'json',
     	success : function( json ){
-    	    $.each( json , function(key,val){
-        		if(val['symbol'] == data.options.m){
-        		    data.result = json[val];
-        		}
-    	    });
+    	    bkg.console.log("json received for getCardData()");
+            for(var i = 0; i < json.length; ++i) {
+                if(json[i].hasOwnProperty('symbol')) {
+                    if(json[i].symbol == data.options.m) {
+                        for(var key in data) {
+                            data.result[key] = json[i].key;
+                        }
+                        break;
+                    }
+                }
+            }
     	},
         error: ajaxError
     });
@@ -219,49 +193,66 @@ function getCardData(){
 function formatDate(val){
 	if(val < 10){ 
         return "0" + val;
-	
     } else { 
         return val;
 	}
 }
 
+/*
+Gets the avergae value of Bitcoin yesterday
+TODO: market info lineup with the graph? Possibly significant differences
+*/
 function getYesterdayAvg() {
+    bkg.console.log("Entered getYesterdayAvg");
 	$.ajax({
-		url:"http://api.coindesk.com/v1/bpi/historical/close.json?for=yesterday",
-		dataType: 'json',
-		success: function ( json ){
+		url: "http://api.coindesk.com/v1/bpi/historical/close.json?for=yesterday",
+		dataType: "json",
+		success: function (json) {
+            bkg.console.log("json received for getYesterdayAvg()");
 			var d = new Date();
 			d.setDate(d.getDate()-1);
-			var formatted = d.getFullYear()+'-'+formatDate(d.getMonth()+1)+'-'+formatDate((d.getDay()-1));
+			var formatted = d.getFullYear() + '-' + formatDate(d.getMonth()+1) + '-' + formatDate((d.getDay()-1));
 			bkg.console.log(json['bpi']);
 			data.result.yesterday_avg = json['bpi'][formatted];
-
-			getChange();
 		},
 		error: ajaxError
 	});
 }
+
+/*
+Sets the change field of result which represents the difference of the average
+price yesterday to the current price.
+*/
 function getChange(){
 	data.result.change = data.result.close - data.result.yesterday_avg; 
 }
+
+/*
+Gets the hash rate for the global Bitcoin network
+*/
 function getHashRate() {
+    bkg.console.log("Entered getHashRate()");
     $.ajax({
-        url:"http://blockchain.info/q/hashrate",
-        success: function( text ){
+        url: "http://blockchain.info/q/hashrate",
+        success: function(text) {
+            bkg.console.log("Text received for getHashRate()");
+            bkg.console.log(text);
             data.result.hashrate = Number(text).toPrecision(3);
         },
         error: ajaxError
     });
 }
 
-/**
- *Returns the Difficulity rate currently for bitcoin
- **/
+/*
+Returns the current blockchain difficulty level for Bitcoin mining
+*/
 function getDifficulity() {
+    bkg.console.log("Entering getDifficulity()");
     $.ajax({
         url:"http://blockchain.info/q/getdifficulty",
         success: function( text ){
-           data.result.difficulity = Number(text).toPrecision(2);
+            bkg.console.log("Text received for getDifficulity()");
+            data.result.difficulity = Number(text).toPrecision(2);
         },
         error: ajaxError
     });
@@ -274,10 +265,8 @@ function ajaxError(jqXHR, textStatus, errorThrown) {
 function buildContainer() {
     bkg.console.log("Inside of buildContainer()");
 
+    getChange();
     var d = new Date();
-
-    bkg.console.log("Date built");
-
     var domElement = [
         "<li class='mod g tpo knavi obcontainer'>",
         "<!--m-->",
@@ -377,8 +366,9 @@ function buildContainer() {
         "<!--n-->",
         "</li>"
     ].join('\n');
-    bkg.console.log("object built. injecting...");
-    $('#rso').prepend(domElement);
+    bkg.console.log("Container built. Returning from buildContainer()");
+    //$('#rso').prepend(domElement);
 
-    bkg.console.log("object injected");
+    return domElement;
+    //bkg.console.log("object injected");
 }
