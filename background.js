@@ -95,7 +95,7 @@ var data = {
 };
 
 $(document).bind("ajaxStop", function(){
-    insertHTML(buildContainer());
+    buildContainer();
 });
 
 function updateData() {
@@ -180,8 +180,11 @@ function getCardData(){
 getYesterdayAvg();
 
 function formatDate(val){
-	if(val < 10){ return "0"+val;
-	}else{ return val;
+	if(val < 10){ 
+        return "0" + val;
+	
+    } else { 
+        return val;
 	}
 }
 function getYesterdayAvg(){
