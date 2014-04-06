@@ -147,8 +147,9 @@ function checkForBitcoin(subs){
 
 /**
  * Fetches the data for the card population
+ * returns an array with values
+ * avg, cvolume (currency volume), difficulty, ghashrate, high, low, and btc volume
  **/
-getCardData();
 function getCardData(){
 	var result = [];
 	$.ajax({
