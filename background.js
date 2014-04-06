@@ -74,9 +74,9 @@ var data = {
 }
 
 function optimizeURLS() {
-    setOptimumWidth();
-    setOptimumHeight();
-    for()
+    //setOptimumWidth();
+    //setOptimumHeight();
+    //TODO: optimize!
 }
 
 //Keeps the lastUpdated variable up-to-date
