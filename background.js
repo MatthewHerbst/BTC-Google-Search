@@ -287,7 +287,7 @@ function buildContainer() {
         "<span>" + data.options.m + ": </span>",
         "<span>BTC</span>",
         "<span> - </span> ",
-        "<span class='fac-lt' data-symbol='BTC'>" + d.toLocalString() + "</span> ",
+        "<span class='fac-lt' data-symbol='BTC'>" + d.toLocaleString() + "</span> ",
         "ET",
         "</div>",
         "<div class='cv_cb'>",
