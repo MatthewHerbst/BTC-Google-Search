@@ -68,7 +68,8 @@ var data = {
             }
         }
     },
-    result: {}
+    result: {},
+    isBitcoin : false
 };
 
 /*
@@ -97,6 +98,7 @@ $(document).ready(function() {
                 subs = subs.substring(2, subs.indexOf('&'));
                 positive = checkForBitcoin(subs);
             }
+	    data.isBitcoin = positive;
             if(positive){ //Positive bitcoin match
                 bkg.console.log("Request contained match for bitcoin or btc");
                 updateData();
@@ -106,6 +108,13 @@ $(document).ready(function() {
         },
         {urls: ["https://www.google.com/*"]} //Do this for all google urls
     );
+
+	chrome.tabs.onUpdated.addListener(function(tabId, changeInfo) {
+    if (changeInfo.status === 'complete' && data.isBitcoin) {
+        buildContainer();
+    }
+});
+
 });
 
 /*
@@ -177,16 +186,6 @@ function checkForBitcoin(subs){
                 (subs == 'bitcoin')    ||
                 (subs == 'btc')
             );
-
-    /*
-    if( (subs == 'bit%20coin') ||
-        (subs == 'bit+coin')   ||
-        (subs == 'bitcoin')    ||
-        (subs == 'btc')){
-        return true;
-    }
-    return false;
-    */
 }
 
 /**
@@ -298,7 +297,7 @@ function buildContainer() {
         "</div>",
         "<div class='fmob_r_ct'>",
         "<div class='fmob_rc_ct'>",
-        "<a href='http://bitcoincharts.com/markets/" + result.symbol + ".html'><img src='"+ buildURL("d1") + "' style='border:0' alt='Bitcoin Market Data' id='fmob_chart'/></a><div id='fmob_cb_container'>" ,                                                 
+        "<a href='http://bitcoincharts.com/markets/" + data.result.symbol + ".html'><img src='"+buildURL("d1")+"' style='border:0' alt='Bitcoin Market Data' id='fmob_chart'/></a><div id='fmob_cb_container'>" ,                                                 
         "<div class='fmob_cb_l' onclick='updateRange(d1)' data-ved='0CCsQ-BMoADAA'>",
         "<span class='fmob_cb_np ksb mini' style='display:none'>1d</span>",
         "<span class='fmob_cb_pr ksb ksbs mini'>1d</span>",
@@ -371,9 +370,7 @@ function buildContainer() {
         "<!--n-->",
         "</li>"
     ].join('\n');
-
     bkg.console.log("object built. injecting...");
-
     $('#rso').prepend(domElement);
 
     bkg.console.log("object injected");
